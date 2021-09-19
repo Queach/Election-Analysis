@@ -4,8 +4,9 @@ import csv
 
 #Assigns variable for read file
 election_results = os.path.join('Resources','election_results.csv')
-#Assigns variable for write file
+#Assigns variables for write files
 election_save = os.path.join("analysis","election_analysis.txt")
+election_results_save = os.path.join("analysis","election_results.txt")
 
 #Declare Variables
 total_vote = 0
@@ -37,37 +38,51 @@ with open(election_results) as election_data:
 
         #Total vote count
         total_vote += 1
-    
+        
+
+    with open(election_save, "w") as txt_file:
+        election_results = (
+
+            f"\nElection Results\n"
+            f"-------------------------\n"
+            f"Total Votes: {total_vote:,}\n"
+            f"-------------------------\n"
+
+        )
+
+        print(election_results, end="")
+        txt_file.write(election_results)
 
 
-#Loop through each canditate and calculate vote percentage
-for candidate_name in candidate_votes:
-    votes = candidate_votes[candidate_name]
+        #Loop through each canditate and calculate vote percentage
+        for candidate_name in candidate_votes:
+            votes = candidate_votes[candidate_name]
 
-    vote_percentage = float(votes) / float(total_vote) * 100
+            vote_percentage = float(votes) / float(total_vote) * 100
 
-    print(f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
-    
-    #Finds winning candidate and percentage of votes
-    if (votes > winning_count) and (vote_percentage > winning_percentage):
+            #print and write to file
+            candidate_results = (f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
+            print(candidate_results)
+            txt_file.write(candidate_results)
 
-        winning_count = votes
-        winning_percentage = vote_percentage
-        winning_candidate = candidate_name
+            
+            #Finds winning candidate and percentage of votes
+            if (votes > winning_count) and (vote_percentage > winning_percentage):
 
-winning_candidate_summary = (
-    f"-------------------------\n"
-    f"Winner: {winning_candidate}\n"
-    f"Winning Vote Percentage: {winning_percentage:.1f}%\n"
-    f"-------------------------\n"
-)
+                winning_count = votes
+                winning_percentage = vote_percentage
+                winning_candidate = candidate_name
 
-print(winning_candidate_summary)
+        winning_candidate_summary = (
+            f"-------------------------\n"
+            f"Winner: {winning_candidate}\n"
+            f"Winning Vote Percentage: {winning_percentage:.1f}%\n"
+            f"-------------------------\n"
+        )
 
+        print(winning_candidate_summary)
+        txt_file.write(winning_candidate_summary)
 
-#Writes to writable file
-with open(election_save, "w") as txt_file:
-    txt_file.write("Arapahoe\nDenver\nJefferson")
 
 
 #-------------To dos-------------
